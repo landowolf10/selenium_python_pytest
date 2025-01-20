@@ -9,11 +9,11 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 import os
 
 class SetUp:
-    driver = None
-    driver_instance_exists = False
-    driver_instance = None
+    driver: webdriver = None
+    driver_instance_exists: bool = False
+    driver_instance: webdriver = None
 
-    def get_driver(self, browser_name, is_selenium_grid_enabled: bool):
+    def get_driver(self, browser_name: str, is_selenium_grid_enabled: bool):
         if self.driver_instance_exists:
             self.driver = self.driver_instance
         else:
@@ -35,31 +35,31 @@ class SetUp:
 
         if browser.lower() == "chrome":
             ChromeDriverManager().install()
-            chrome_options = ChromeOptions()
+            chrome_options: ChromeOptions = ChromeOptions()
             # chrome_options.add_argument("--remote-allow-origins=*")
             # chrome_options.add_argument("--headless=new")
             capabilities = chrome_options.to_capabilities()
         elif browser.lower() == "firefox":
             GeckoDriverManager().install()
-            firefox_options = FirefoxOptions()
+            firefox_options: FirefoxOptions = FirefoxOptions()
             # firefox_options.add_argument("--headless")
-            capabilities = firefox_options.to_capabilities()
+            capabilities: dict = firefox_options.to_capabilities()
 
         if capabilities:
             return RemoteWebDriver(command_executor=grid_hub_host, desired_capabilities=capabilities)
         else:
             raise RuntimeError("Capabilities not set for the browser")
 
-    def create_local_driver(self, browser_name):
+    def create_local_driver(self, browser_name: str):
         if browser_name.lower() == "chrome":
             ChromeDriverManager().install()
-            chrome_options = ChromeOptions()
+            chrome_options: ChromeOptions = ChromeOptions()
             # chrome_options.add_argument("--remote-allow-origins=*")
             chrome_options.add_argument("--headless")
             self.driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
         elif browser_name.lower() == "firefox":
             GeckoDriverManager().install()
-            firefox_options = FirefoxOptions()
+            firefox_options: FirefoxOptions = FirefoxOptions()
             firefox_options.add_argument("--headless")
             self.driver = webdriver.Firefox(service=FirefoxService(), options=firefox_options)
 
@@ -70,7 +70,7 @@ class SetUp:
 
     def quit_driver(self):
         if self.driver_instance_exists:
-            current_driver = self.driver_instance
+            current_driver: webdriver = self.driver_instance
             current_driver.quit()
 
         self.driver_instance_exists = False
