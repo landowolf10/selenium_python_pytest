@@ -30,11 +30,6 @@ jobs:
         run: curl https://sh.rustup.rs -sSf | sh -s -- -y
         shell: bash
 
-      - name: Install Chrome and Firefox
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable firefox
-
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
