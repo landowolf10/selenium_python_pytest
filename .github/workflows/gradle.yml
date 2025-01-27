@@ -13,14 +13,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11.5'
 
       - name: Install Rust
-        run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+        run: |
+          curl https://sh.rustup.rs -sSf | sh -s -- -y
+          source $HOME/.cargo/env
         shell: bash
+
+      - name: Install required system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libssl-dev \
+            libffi-dev \
+            build-essential
 
       - name: Upgrade pip, setuptools, and wheel
         run: |
@@ -28,7 +38,6 @@ jobs:
 
       - name: Install Chrome and Firefox
         run: |
-          sudo apt-get update
           sudo apt-get install -y google-chrome-stable firefox
 
       - name: Install dependencies
