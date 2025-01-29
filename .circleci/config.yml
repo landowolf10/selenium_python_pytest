@@ -1,0 +1,28 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.11.5-browsers  # Use a Python image with browsers pre-installed
+    steps:
+      - checkout
+      - run:
+          name: Set up Python virtual environment
+          command: |
+            python -m venv venv
+            source venv/bin/activate
+      - run:
+          name: Install dependencies
+          command: |
+            pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: Run Selenium Tests with pytest
+          command: |
+            pytest
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - build
