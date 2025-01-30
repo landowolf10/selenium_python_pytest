@@ -12,27 +12,10 @@ jobs:
             python -m venv venv
             source venv/bin/activate
       - run:
-          name: Add Google Chrome GPG key (modern approach)
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y wget gnupg
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-linux-signing-key.gpg
-            echo "deb [signed-by=/usr/share/keyrings/google-linux-signing-key.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-            sudo apt-get update
-      - run:
-          name: Install system dependencies
-          command: |
-            sudo apt-get install -y build-essential libssl-dev libffi-dev python3-dev
-      - run:
           name: Install dependencies
           command: |
             pip install --upgrade pip
             pip install -r requirements.txt
-      - run:
-          name: Reinstall cryptography
-          command: |
-            pip uninstall -y cryptography
-            pip install cryptography
       - run:
           name: Run Selenium Tests with pytest
           command: |
