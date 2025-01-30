@@ -12,6 +12,12 @@ jobs:
             python -m venv venv
             source venv/bin/activate
       - run:
+          name: Install Rust
+          command: |
+            apt update && apt install -y curl
+            curl https://sh.rustup.rs -sSf | sh -s -- -y
+            source $HOME/.cargo/env
+      - run:
           name: Install dependencies
           command: |
             pip install --upgrade pip
