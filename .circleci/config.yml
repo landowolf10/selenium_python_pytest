@@ -1,7 +1,7 @@
 jobs:
   build:
     docker:
-      - image: cimg/python:3.11-browsers
+      - image: cimg/python:3.11.5-browsers
     steps:
       - checkout
       - run:
@@ -12,7 +12,9 @@ jobs:
       - run:
           name: Install System Dependencies
           command: |
-            apt update && apt install -y libssl-dev libffi-dev python3-dev build-essential
+            echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' | sudo tee -a /etc/sudoers
+            sudo apt update && sudo apt install -y libssl-dev libffi-dev python3-dev build-essential
+
       - run:
           name: Install Rust
           command: |
