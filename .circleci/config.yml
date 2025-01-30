@@ -13,7 +13,10 @@ jobs:
           name: Install System Dependencies
           command: |
             echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' | sudo tee -a /etc/sudoers
+            sudo mkdir -p /etc/apt/keyrings
+            curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | sudo tee /etc/apt/keyrings/google-chrome.asc > /dev/null
             sudo apt update && sudo apt install -y libssl-dev libffi-dev python3-dev build-essential
+
 
       - run:
           name: Install Rust
