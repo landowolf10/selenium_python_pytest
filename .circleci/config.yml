@@ -6,32 +6,84 @@ jobs:
       - image: python:3.11.5  # Use an appropriate Python version
     steps:
       - checkout
+
+      # Install system dependencies including browsers
       - run:
           name: Install system dependencies
           command: |
             apt-get update && apt-get install -y \
             libssl-dev \
-            rustc
+            libffi-dev \
+            rustc \
+            curl \
+            wget \
+            unzip \
+            xvfb \
+            libxi6 \
+            libgconf-2-4 \
+            libnss3 \
+            libatk1.0-0 \
+            libxrandr2 \
+            libxss1 \
+            libgtk-3-0
+
+      # Install Chrome
+      - run:
+          name: Install Google Chrome
+          command: |
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+            echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
+            apt-get update && apt-get install -y google-chrome-stable
+
+      # Install ChromeDriver
+      - run:
+          name: Install ChromeDriver
+          command: |
+            CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+            wget -q https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
+            unzip chromedriver_linux64.zip
+            mv chromedriver /usr/local/bin/
+            chmod +x /usr/local/bin/chromedriver
+
+      # Install Firefox
+      - run:
+          name: Install Firefox
+          command: |
+            apt-get install -y firefox
+
+      # Install GeckoDriver (for Firefox)
+      - run:
+          name: Install GeckoDriver
+          command: |
+            GECKO_DRIVER_VERSION=$(curl -sS https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep "tag_name" | cut -d '"' -f 4)
+            wget -q https://github.com/mozilla/geckodriver/releases/download/$GECKO_DRIVER_VERSION/geckodriver-$GECKO_DRIVER_VERSION-linux64.tar.gz
+            tar -xvzf geckodriver-$GECKO_DRIVER_VERSION-linux64.tar.gz
+            mv geckodriver /usr/local/bin/
+            chmod +x /usr/local/bin/geckodriver
+
+      # Install Rust (needed for cryptography package)
       - run:
           name: Install Rust
           command: |
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            source $HOME/.cargo/env
+            echo 'source $HOME/.cargo/env' >> $BASH_ENV
+
+      # Set up virtual environment
       - run:
           name: Set up virtual environment
           command: |
             python -m venv venv
             source venv/bin/activate
+
+      # Install dependencies
       - run:
-          name: Install setuptools-rust
-          command: |
-            pip install --upgrade setuptools wheel setuptools_rust
-      - run:
-          name: Install dependencies
+          name: Install Python dependencies
           command: |
             pip install --upgrade pip
             pip install -r requirements.txt
             pip install --no-cache-dir --force-reinstall cryptography
+
+      # Run pytest
       - run:
           name: Run pytest
           command: |
