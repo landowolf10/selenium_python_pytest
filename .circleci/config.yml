@@ -3,9 +3,15 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: python:3.11  # Use a suitable Python version
+      - image: python:3.11  # Use an appropriate Python version
     steps:
       - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            apt-get update && apt-get install -y \
+            libssl-dev \
+            rustc
       - run:
           name: Set up virtual environment
           command: |
@@ -16,6 +22,7 @@ jobs:
           command: |
             source venv/bin/activate
             pip install --upgrade pip
+            pip install --no-cache-dir --force-reinstall cryptography
             pip install -r requirements.txt
       - run:
           name: Run pytest
