@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: python:3.11-browsers  # Use an appropriate Python version
+      - image: python:3.11  # Use an appropriate Python version
     steps:
       - checkout
       - run:
@@ -13,20 +13,29 @@ jobs:
             libssl-dev \
             rustc
       - run:
+          name: Install Rust
+          command: |
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            source $HOME/.cargo/env
+      - run:
           name: Set up virtual environment
           command: |
             python -m venv venv
             source venv/bin/activate
       - run:
+          name: Install setuptools-rust
+          command: |
+            pip install --upgrade setuptools wheel setuptools_rust
+      - run:
           name: Install dependencies
           command: |
             pip install --upgrade pip
-            pip install --no-cache-dir --force-reinstall cryptography
             pip install -r requirements.txt
+            pip install --no-cache-dir --force-reinstall cryptography
       - run:
           name: Run pytest
           command: |
-            pytest
+            pytest --ignore=env/Lib/site-packages/
 
 workflows:
   version: 2
