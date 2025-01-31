@@ -28,14 +28,26 @@ jobs:
             rustc --version
 
       - run:
+          name: Verify Rust Installation
+          command: |
+            which cargo
+            cargo --version
+
+      - run:
           name: Upgrade setuptools, wheel, and pip
           command: |
             pip install --upgrade setuptools wheel pip
 
       - run:
+          name: Reinstall cryptography with Rust bindings
+          command: |
+            pip uninstall -y cryptography
+            pip install --no-binary cryptography cryptography > cryptography_build.log 2>&1 || cat cryptography_build.log
+
+      - run:
           name: Install dependencies
           command: |
-            pip install --no-binary cryptography -r requirements.txt
+            pip install -r requirements.txt
 
       - run:
           name: Run Selenium Tests with pytest
