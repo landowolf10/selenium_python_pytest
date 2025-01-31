@@ -23,7 +23,8 @@ jobs:
           name: Install Rust
           command: |
             curl https://sh.rustup.rs -sSf | sh -s -- -y
-            source $HOME/.cargo/env
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
             rustc --version
 
       - run:
