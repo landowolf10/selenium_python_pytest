@@ -20,15 +20,13 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            source venv/bin/activate
             pip install --upgrade pip
             pip install --no-cache-dir --force-reinstall cryptography
             pip install -r requirements.txt
       - run:
           name: Run pytest
           command: |
-            source venv/bin/activate
-            pytest tests/
+            pytest
 
 workflows:
   version: 2
