@@ -1,14 +1,18 @@
+version: 2.1
+
 jobs:
   build:
     docker:
       - image: cimg/python:3.11-browsers
     steps:
       - checkout
+
       - run:
           name: Set up Python virtual environment
           command: |
             python -m venv venv
             source venv/bin/activate
+
       - run:
           name: Install System Dependencies
           command: |
@@ -21,16 +25,24 @@ jobs:
             curl https://sh.rustup.rs -sSf | sh -s -- -y
             source $HOME/.cargo/env
             rustc --version
+
       - run:
-          name: Upgrade setuptools and wheel
+          name: Upgrade setuptools, wheel, and pip
           command: |
-            pip install --upgrade setuptools wheel
+            pip install --upgrade setuptools wheel pip
+
       - run:
           name: Install dependencies
           command: |
-            pip install --upgrade pip
             pip install --no-binary cryptography -r requirements.txt
+
       - run:
           name: Run Selenium Tests with pytest
           command: |
             pytest
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
