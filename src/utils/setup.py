@@ -37,12 +37,12 @@ class SetUp:
             ChromeDriverManager().install()
             chrome_options: ChromeOptions = ChromeOptions()
             # chrome_options.add_argument("--remote-allow-origins=*")
-            # chrome_options.add_argument("--headless=new")
+            chrome_options.add_argument("--headless")
             capabilities = chrome_options.to_capabilities()
         elif browser.lower() == "firefox":
             GeckoDriverManager().install()
             firefox_options: FirefoxOptions = FirefoxOptions()
-            # firefox_options.add_argument("--headless")
+            firefox_options.add_argument("--headless")
             capabilities: dict = firefox_options.to_capabilities()
 
         if capabilities:
