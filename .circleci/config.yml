@@ -14,14 +14,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y wget unzip libnss3 libgconf-2-4 libxi6 libxrandr2 libasound2 libatk1.0-0 libcups2 fonts-liberation libxcomposite1 libxdamage1 libxext6 libxfixes3 libxinerama1 libpangocairo-1.0-0 libpangoft2-1.0-0 libx11-xcb1 libxcb1 libxkbcommon0 libxrender1 libxshmfence1
 
-      # Install Chrome
-      - run:
-          name: Install Google Chrome
-          command: |
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-            echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
-            apt-get update && apt-get install -y google-chrome-stable
-
       # Set up virtual environment
       - run:
           name: Set up virtual environment
