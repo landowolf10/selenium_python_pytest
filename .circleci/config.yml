@@ -3,29 +3,16 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: python:3.11.5  # Use an appropriate Python version
+      - image: circleci/python:3.9
     steps:
       - checkout
 
       # Install system dependencies including browsers
       - run:
-          name: Install system dependencies
+          name: Install dependencies
           command: |
-            apt-get update && apt-get install -y \
-            libssl-dev \
-            libffi-dev \
-            rustc \
-            curl \
-            wget \
-            unzip \
-            xvfb \
-            libxi6 \
-            libgconf-2-4 \
-            libnss3 \
-            libatk1.0-0 \
-            libxrandr2 \
-            libxss1 \
-            libgtk-3-0
+            sudo apt-get update
+            sudo apt-get install -y wget unzip libnss3 libgconf-2-4 libxi6 libxrandr2 libasound2 libatk1.0-0 libcups2 fonts-liberation libxcomposite1 libxdamage1 libxext6 libxfixes3 libxinerama1 libpangocairo-1.0-0 libpangoft2-1.0-0 libx11-xcb1 libxcb1 libxkbcommon0 libxrender1 libxshmfence1
 
       # Install Chrome
       - run:
@@ -34,28 +21,6 @@ jobs:
             wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
             echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
             apt-get update && apt-get install -y google-chrome-stable
-
-      # Install Firefox
-      - run:
-          name: Install Firefox
-          command: |
-            apt-get update && apt-get install -y firefox-esr
-
-      # Install Geckodriver
-      - run:
-          name: Install Geckodriver
-          command: |
-            wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
-            tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
-            chmod +x geckodriver
-            mv geckodriver /usr/local/bin/
-
-      # Install Rust (needed for cryptography package)
-      - run:
-          name: Install Rust
-          command: |
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            echo 'source $HOME/.cargo/env' >> $BASH_ENV
 
       # Set up virtual environment
       - run:
@@ -76,8 +41,7 @@ jobs:
       - run:
           name: Run pytest
           command: |
-            pytest --ignore=env/Lib/site-packages/
-
+            pytest
 workflows:
   version: 2
   test:
