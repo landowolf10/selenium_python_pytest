@@ -28,6 +28,14 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+       # Run tests and generate the HTML report
       - name: Run tests
         run: |
-          pytest
+          pytest --html=report.html
+
+      # Upload the HTML report as an artifact
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-report
+          path: report.html
