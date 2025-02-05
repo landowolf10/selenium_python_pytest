@@ -35,12 +35,31 @@ jobs:
             echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
             apt-get update && apt-get install -y google-chrome-stable
 
+      # Install ChromeDriver
+      - run:
+          name: Install ChromeDriver
+          command: |
+            CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
+            wget -q https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
+            unzip chromedriver_linux64.zip
+            mv chromedriver /usr/local/bin/
+            chmod +x /usr/local/bin/chromedriver
 
       # Install Firefox
       - run:
           name: Install Firefox
           command: |
             apt-get install -y firefox
+
+      # Install GeckoDriver (for Firefox)
+      - run:
+          name: Install GeckoDriver
+          command: |
+            GECKO_DRIVER_VERSION=$(curl -sS https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep "tag_name" | cut -d '"' -f 4)
+            wget -q https://github.com/mozilla/geckodriver/releases/download/$GECKO_DRIVER_VERSION/geckodriver-$GECKO_DRIVER_VERSION-linux64.tar.gz
+            tar -xvzf geckodriver-$GECKO_DRIVER_VERSION-linux64.tar.gz
+            mv geckodriver /usr/local/bin/
+            chmod +x /usr/local/bin/geckodriver
 
       # Install Rust (needed for cryptography package)
       - run:
