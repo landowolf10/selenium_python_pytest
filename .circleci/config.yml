@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: python:3.11.5  # Use an appropriate Python version
+      - image: python:3.11.5
     steps:
       - checkout
 
